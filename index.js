@@ -51,6 +51,38 @@ app.post('/events', (req, res) => {
   }
 })
 
+app.put('/events/:id', (req, res) => {
+  var title = req.body.title
+  var desc = req.body.description
+  var date = req.body.date
+  var time = req.body.time
+  var dur = req.body.duration
+  if (!title || !desc || !date || !time || !dur) {
+    res.status(400).json({error: {message: "Bad request, all fields required"}})
+  }
+  let id = req.params.id
+  events.forEach(event => {
+    if (event.id === id) {
+      event.title = title
+      event.desc = desc
+      event.date = date
+      event.time = time
+      event.dur = dur
+      res.status(200).json(event)
+    }
+  })
+})
+
+app.delete('/events/:id', (req, res) => {
+  let id = req.params.id
+  events.forEach((event, index) => {
+    if(event.id === id) {
+      events.splice(index, 1)
+      res.status(200).json(event)
+    }
+  })
+  res.status(404).json({ error: {message: 'Event not found'}})
+})
 
 
 app.use((err, req, res, next) => {
